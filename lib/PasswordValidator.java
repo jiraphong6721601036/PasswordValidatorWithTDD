@@ -3,17 +3,33 @@ package lib;
 public class PasswordValidator {
 
     /**
-     * คุณจะต้องเขียน Javadoc ที่สมบูรณ์ที่นี่ในอนาคต
-     * เพื่ออธิบายกฎการทำงานของเมธอด
+     * ตรวจสอบระดับความยากง่ายของรหัสที่ผู้ใช้งานตั้ง
+     * @param password รหัสผ่านที่ผู้ใช้งานป้อนเข้ามา
+     * @return ระดับความยากง่ายของรหัส โดยเรียงลำดับจาก(INVALID=ไม่ถูกต้อง,WEAK=ง่าย,MEDIUM=ปานกลาง, STRONG=ยาก)
      */
-    // TODO: แก้ไข return type ของเมธอดนี้ให้ถูกต้อง
-    public static void validate(String password) { // Function Type ให้เป็น PasswordStrength 
-        
-        // ส่วนของ Implementation ที่คุณต้องเขียน
-        // ...
-        
-        int minLength = 8 // TODO: มีอะไรขาดหายไปที่บรรทัดนี้?
-        
-        return null ; // TODO: การคืนค่านี้ถูกต้องหรือไม่?
+
+    public static PasswordStrength validate(String password) {  
+        int minLength = 8;
+                if (password.length() < minLength) {
+            return PasswordStrength.INVALID;
+        }
+        if (password == null || password.isEmpty()) {
+            return PasswordStrength.INVALID;
+        }
+        boolean Upper = password.matches(".*[A-Z].*");
+        boolean Lower = password.matches(".*[a-z].*");
+        boolean Digit = password.matches(".*\\d.*");
+        boolean Special = password.matches(".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>/?].*");
+
+        if (Upper && Lower && Digit && Special && password.length() >= minLength) {
+            return PasswordStrength.STRONG;
+        } else if ((Upper || Lower) && Digit && password.length() >= minLength) {
+            return PasswordStrength.MEDIUM;
+        }else if (Digit && Special&& password.length() >= minLength ) {
+            return PasswordStrength.MEDIUM; 
+        }else if ((Upper || Lower) && Special && password.length() >= minLength ) {
+            return PasswordStrength.MEDIUM; 
+        }else
+            return PasswordStrength.WEAK;
     }
 }
